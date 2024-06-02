@@ -2,3 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    direction: rtl;
+}
+
+.mSection {
+    @apply w-full h-full flex items-center justify-start flex-col p-2
+}
+.mSection > h2 {
+    @apply text-2xl font-bold my-10
+}

@@ -9,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar">
-      <body>{children}</body>
+      <body className="h-screen relative flex">{children}</body>
     </html>
   );
 }
