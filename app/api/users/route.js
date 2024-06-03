@@ -3,9 +3,9 @@ import User from "@/models/users"
 import { NextResponse } from "next/server"
 
 export async function POST(req) {
-    const { name, username, password, role } = await req.json()
+    const { name, username, password, role, branch } = await req.json()
     await connectMongoDB()
-    await User.create({ name, username, password, role })
+    await User.create({ name, username, password, role, branch })
     return NextResponse.json({ message: 'User Created' }, { status: 201 })
 }
 

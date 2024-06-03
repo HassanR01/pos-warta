@@ -11,6 +11,9 @@ module.exports = {
         mainColor: "#020940",
         bgColor: "#fefefe",
         blackColor: "#000000"
+      },
+      fontFamily: {
+        mainFont: ["Alexandria"]
       }
     },
   },
