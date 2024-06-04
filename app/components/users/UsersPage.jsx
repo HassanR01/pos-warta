@@ -84,8 +84,8 @@ export default function UsersPage() {
                         </>
                     ) : (
                         <div className="usersList">
-                            {users.map(user => (
-                                <div className="user">
+                            {users.map((user, ind) => (
+                                <div className="user" key={ind}>
                                     <h2>{user.name}</h2>
                                     <h4>{user.username}</h4>
                                     <h4>{secPassword(user.password)}</h4>

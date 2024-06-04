@@ -82,8 +82,8 @@ export default function AddUser({ Users, Branches }) {
 
                     <select className='w-full sm:w-80 mx-0 sm:mx-3 mb-5 lg:mb-5' name="branch" id="branch" value={branch} onChange={(e) => setbranch(e.target.value)}>
                         <option value="">الفرع العامل به</option>
-                        {branchesName.map((branch) => (
-                            <option value={branch}>{branch}</option>
+                        {branchesName.map((branch, ind) => (
+                            <option key={ind} value={branch}>{branch}</option>
                         ))}
                         <option value="All">الكل</option>
                     </select>
