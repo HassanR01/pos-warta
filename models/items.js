@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const itemSchema = new Schema({
     title: String,
@@ -9,3 +9,7 @@ const itemSchema = new Schema({
     category: String,
     description: String,
 })
+
+const Item = mongoose.models.Item || mongoose.model('Item', itemSchema)
+
+export default Item;

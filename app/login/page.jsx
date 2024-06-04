@@ -49,10 +49,15 @@ export default function Page() {
       e.preventDefault()
       if (username && password) {
 
-        if (user[0].username === username && user[0].password == password) {
-          sessionStorage.setItem('User', JSON.stringify(user[0]))
-          setAlert('تم تسجيل الدخول');
-          router.push('/')
+        if (user[0]?.username === username) {
+          if (user[0].password == password) {
+
+            sessionStorage.setItem('User', JSON.stringify(user[0]))
+            setAlert('تم تسجيل الدخول');
+            router.push('/')
+          } else {
+            setAlert('كلمة المرور غلط')
+          }
         } else {
           setAlert("هذا المستخدم غير موجود");
         }

@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const salarySchema = new Schema({
-    for: String,
+    payFor: String,
     user: String,
     salary: Number,
     branch: String,
