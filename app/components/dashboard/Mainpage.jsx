@@ -4,9 +4,10 @@ import ItemsPage from '../Items/ItemsPage'
 import UsersPage from '../users/UsersPage'
 import { useRouter } from 'next/navigation'
 import Loading from '../main/Loading'
+import BranchesList from '../branch/BranchesList'
 
 export default function Mainpage() {
-    const [section, setSection] = useState('Items')
+    const [section, setSection] = useState('Users')
     const [openMenu, setOpenMenu] = useState(false)
     const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -93,9 +94,9 @@ export default function Mainpage() {
 
                 {section === 'Branches' && (
                     <section className='mSection'>
-                        <h2>Branches</h2>
+                        <h2>الفـــروع</h2>
                         {/* Content */}
-
+                        <BranchesList />
 
                     </section>
                 )}

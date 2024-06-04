@@ -2,21 +2,31 @@
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import AddUser from './AddUser'
+import Loading from '../main/Loading'
 
 export default function UsersPage() {
     const [users, setusers] = useState(null)
+    const [branches, setBranches] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [openAddUser, setOpenAddUser] = useState(false)
 
     const router = useRouter()
-    
+
     const getUsers = async () => {
         try {
             const res = await fetch('/api/users', {
                 cache: 'no-store'
             })
+            const resbranches = await fetch('/api/branches', {
+                cache: "no-store"
+            })
 
             const users = await res.json()
             setusers(users.users)
+
+            const branches = await resbranches.json()
+            setBranches(branches.branches)
 
         } catch (error) {
             console.log(error);
@@ -24,15 +34,16 @@ export default function UsersPage() {
             setIsLoading(false)
         }
     }
+
+
+
     useEffect(() => {
         getUsers()
 
-        const reGetting = setInterval(getUsers, 100)
-        return () => clearInterval(reGetting)
     }, [])
 
     if (isLoading) {
-        return null
+        return <Loading />
     } else {
 
         const deleteUser = async (username) => {
@@ -50,6 +61,10 @@ export default function UsersPage() {
             }
         }
 
+        const secPassword = (text) => {
+            return "*".repeat(text.length)
+        }
+
         return (
             <>
                 <motion.div
@@ -60,14 +75,25 @@ export default function UsersPage() {
                 >
                     <div className="head flex items-center justify-between flex-wrap my-10">
                         <div className="addBtns flex items-center justify-center">
-                            <button className='addBtn'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /> </svg> إضافة مستخدم</button>
+                            <button onClick={() => setOpenAddUser(!openAddUser)} className='addBtn'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`${openAddUser ? "rotate-45" : ""} size-6`}>   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /> </svg> إضافة مستخدم</button>
                         </div>
                     </div>
-                    <div className="usersList">
-                        {users.map(user => (
-                            <h2 onClick={() => deleteUser(user.username)}>{ user.name }</h2>
-                        ))}
-                    </div>
+                    {openAddUser ? (
+                        <>
+                            <AddUser Users={users} Branches={branches} />
+                        </>
+                    ) : (
+                        <div className="usersList">
+                            {users.map(user => (
+                                <div className="user">
+                                    <h2>{user.name}</h2>
+                                    <h4>{user.username}</h4>
+                                    <h4>{secPassword(user.password)}</h4>
+                                </div>
+                            ))}
+                        </div>
+                    )
+                    }
                 </motion.div>
             </>
         )
