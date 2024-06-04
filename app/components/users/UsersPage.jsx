@@ -1,34 +1,54 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 
 export default function UsersPage() {
     const [users, setusers] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        const getUsers = async () => {
-            try {
-                const res = await fetch('/api/users', {
-                    cache: 'no-store'
-                })
+    const router = useRouter()
+    
+    const getUsers = async () => {
+        try {
+            const res = await fetch('/api/users', {
+                cache: 'no-store'
+            })
 
-                const users = await res.json()
-                setusers(users.users)
+            const users = await res.json()
+            setusers(users.users)
 
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setIsLoading(false)
-            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false)
         }
-
+    }
+    useEffect(() => {
         getUsers()
+
+        const reGetting = setInterval(getUsers, 100)
+        return () => clearInterval(reGetting)
     }, [])
 
     if (isLoading) {
         return null
     } else {
+
+        const deleteUser = async (username) => {
+            console.log(username);
+            try {
+                const res = await fetch(`/api/users/${username}`, {
+                    method: "DELETE"
+                })
+
+                if (res.ok) {
+                    router.refresh()
+                }
+            } catch (error) {
+                console.log();
+            }
+        }
 
         return (
             <>
@@ -45,7 +65,7 @@ export default function UsersPage() {
                     </div>
                     <div className="usersList">
                         {users.map(user => (
-                            <h2>{ user.name }</h2>
+                            <h2 onClick={() => deleteUser(user.username)}>{ user.name }</h2>
                         ))}
                     </div>
                 </motion.div>

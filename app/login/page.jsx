@@ -3,10 +3,12 @@ import Image from 'next/image'
 import BgImageLogin from '../../public/loginbgPhone.svg'
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Loading from '../components/main/Loading'
 
 export default function page() {
   const [users, setusers] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [alert, setAlert] = useState('')
 
   const [username, setusername] = useState('')
   const [password, setpassword] = useState('')
@@ -35,7 +37,7 @@ export default function page() {
 
 
   if (isLoading) {
-    return null
+    return <Loading />
   } else {
 
     const user = users.filter(user => {
@@ -45,12 +47,17 @@ export default function page() {
 
     const signIn = (e) => {
       e.preventDefault()
-      if (user[0].username === username && user[0].password == password) {
-        sessionStorage.setItem('User', JSON.stringify(user[0]))
-        console.log('تم تسجيل الدخول');
-        router.push('/')
+      if (username && password) {
+
+        if (user[0].username === username && user[0].password == password) {
+          sessionStorage.setItem('User', JSON.stringify(user[0]))
+          setAlert('تم تسجيل الدخول');
+          router.push('/')
+        } else {
+          setAlert("هذا المستخدم غير موجود");
+        }
       } else {
-        console.log("هذا المستخدم غير موجود");
+        setAlert('اكتب اسم المستخدم و  كلمة السر')
       }
     }
 
@@ -65,7 +72,7 @@ export default function page() {
             <h2 className='text-base lg:text-2xl'>تسجيل دخول للمسخدمين المسجلين فقط</h2>
             <Image src={'/wartaLogo.png'} width={100} height={100} alt='WartLogo' />
           </div>
-          <form onSubmit={signIn}>
+          <form onSubmit={signIn} onChange={() => setAlert('تسجيل الدخول')}>
             <div className="username w-full mb-3 lg:mb-5">
               <label className='text-xl font-semibold' htmlFor="username">اسم المستخدم:</label>
               <input className='w-full my-2' type="text" name="username" value={username} onChange={(e) => setusername(e.target.value)} id="username" placeholder='اسم المستخدم' />
@@ -74,7 +81,7 @@ export default function page() {
               <label className='text-xl font-semibold' htmlFor="password">كلمة المرور:</label>
               <input className='w-full my-2' type="password" name="password" value={password} onChange={(e) => setpassword(e.target.value)} id="password" placeholder='اسم المستخدم' />
             </div>
-            <button className='submitBtn' type='submit'>تسجيل دخول</button>
+            <button className='submitBtn' type='submit'>{alert ? alert : 'تسجيل دخول'}</button>
           </form>
         </div>
       </section>

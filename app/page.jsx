@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Mainpage from "./components/dashboard/Mainpage";
 import { useEffect, useState } from "react";
+import Loading from "./components/main/Loading";
 
 export default function Home() {
   const [uesr, setuser] = useState(null)
@@ -20,7 +21,7 @@ export default function Home() {
   }, [])
 
   if (isLoading) {
-    return null
+    return <Loading />
   } else {
 
 

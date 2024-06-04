@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
+
 export default function ItemsPage() {
     const [filter, setfilter] = useState('')
     const [category, setCategory] = useState('')
