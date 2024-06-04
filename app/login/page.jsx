@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation'
 import Loading from '../components/main/Loading'
 
 export default function page() {
-  const [users, setusers] = useState(null)
+  const [users, setUsers] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [alert, setAlert] = useState('')
 
-  const [username, setusername] = useState('')
-  const [password, setpassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const router = useRouter()
 
@@ -23,7 +23,7 @@ export default function page() {
         })
 
         const users = await res.json()
-        setusers(users.users)
+        setUsers(users.users)
 
       } catch (error) {
         console.log(error);
@@ -75,11 +75,11 @@ export default function page() {
           <form onSubmit={signIn} onChange={() => setAlert('تسجيل الدخول')}>
             <div className="username w-full mb-3 lg:mb-5">
               <label className='text-xl font-semibold' htmlFor="username">اسم المستخدم:</label>
-              <input className='w-full my-2' type="text" name="username" value={username} onChange={(e) => setusername(e.target.value)} id="username" placeholder='اسم المستخدم' />
+              <input className='w-full my-2' type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} id="username" placeholder='اسم المستخدم' />
             </div>
             <div className="password w-full mb-3 lg:mb-5">
               <label className='text-xl font-semibold' htmlFor="password">كلمة المرور:</label>
-              <input className='w-full my-2' type="password" name="password" value={password} onChange={(e) => setpassword(e.target.value)} id="password" placeholder='اسم المستخدم' />
+              <input className='w-full my-2' type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} id="password" placeholder='اسم المستخدم' />
             </div>
             <button className='submitBtn' type='submit'>{alert ? alert : 'تسجيل دخول'}</button>
           </form>
