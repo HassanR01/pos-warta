@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Loading from '../components/main/Loading'
 
-export default function page() {
+export default function Page() {
   const [users, setUsers] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [alert, setAlert] = useState('')
