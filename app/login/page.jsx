@@ -70,7 +70,7 @@ export default function Page() {
         <div className="loginForm w-full lg:w-8/12 bg-bgColor p-5 rounded-2xl shadow-2xl border">
           <div className="head flex items-center justify-between mb-5 lg:mb-10">
             <h2 className='text-base lg:text-2xl'>تسجيل دخول للمسخدمين المسجلين فقط</h2>
-            <Image src={'/wartaLogo.png'} width={100} height={100} alt='WartLogo' />
+            <Image src={'/wartalogo.png'} width={100} height={100} alt='WartLogo' />
           </div>
           <form onSubmit={signIn} onChange={() => setAlert('تسجيل الدخول')}>
             <div className="username w-full mb-3 lg:mb-5">
