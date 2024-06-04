@@ -13,31 +13,33 @@ export default function UsersPage() {
 
     const router = useRouter()
 
-    const getUsers = async () => {
-        try {
-            const res = await fetch('/api/users', {
-                cache: 'no-store'
-            })
-            const resbranches = await fetch('/api/branches', {
-                cache: "no-store"
-            })
-
-            const users = await res.json()
-            setusers(users.users)
-
-            const branches = await resbranches.json()
-            setBranches(branches.branches)
-
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-
-
+    
+    
+    
     useEffect(() => {
+        
+        const getUsers = async () => {
+            try {
+                const res = await fetch('/api/users', {
+                    cache: 'no-store'
+                })
+                const resbranches = await fetch('/api/branches', {
+                    cache: "no-store"
+                })
+    
+                const users = await res.json()
+                setusers(users.users)
+    
+                const branches = await resbranches.json()
+                setBranches(branches.branches)
+    
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
         getUsers()
 
     }, [])
