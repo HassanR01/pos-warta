@@ -9,7 +9,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ar">
-      <body className="h-screen relative flex font-mainFont">{children}</body>
+      <body className="h-screen relative flex font-mainFont" suppressHydrationWarning={true}>
+        {children}
+      </body>
     </html>
   );
 }
