@@ -13,6 +13,7 @@ export default function ItemsPage() {
 
     const [categories, setCategories] = useState(null)
     const [items, setitems] = useState(null)
+    const [branches, setBranches] = useState(null)
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -22,9 +23,23 @@ export default function ItemsPage() {
                 const ResultCtg = await fetch('/api/categories', {
                     cache: "no-store"
                 })
+                const ResultItems = await fetch('/api/items', {
+                    cache: 'no-store'
+                })
+                const res = await fetch('/api/branches', {
+                    cache: "no-store"
+                })
+
+                const result = await res.json()
+                setBranches(result.branches)
 
                 const Ctg = await ResultCtg.json()
                 setCategories(Ctg.categories)
+
+                const items = await ResultItems.json()
+                setitems(items.items)
+
+
             } catch (error) {
                 console.log();
             } finally {
@@ -43,6 +58,11 @@ export default function ItemsPage() {
         const clist = []
         categories.map(ctg => {
             clist.push(ctg.title)
+        })
+
+        let branchesName = []
+        branches.map(branch => {
+            branchesName.push(branch.name)
         })
 
         return (
@@ -72,14 +92,21 @@ export default function ItemsPage() {
                         </ul>
                     </div>
                     <div className="itemsList">
-
+                        {items.map((item, ind) => (
+                            <div className="item" key={ind}>
+                                <h2>{item.title}</h2>
+                            </div>
+                        ))}
                     </div>
                 </motion.div>
+
+
+                {/* Add Components */}
                 <div className={`addItems flex items-center justify-center p-2 absolute top-0 left-0 bg-bgColor duration-700 ${openAddItem ? "w-full opacity-100 h-full rounded-none" : "rounded-2xl opacity-0 w-0 h-0"}`}>
                     {openAddItem && (
                         <>
                             <button onClick={() => setOpenAddItem(!openAddItem)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>
-                            <AddItem />
+                            <AddItem Ctgs={clist} Brns={branchesName} />
                         </>
                     )}
                 </div>

@@ -17,7 +17,7 @@ body {
 input,
 select,
 textarea {
-  @apply px-4 py-1 font-semibold rounded-full outline-none bg-bgColor border-2 border-black;
+  @apply px-4 py-1 font-semibold text-base rounded-full outline-none bg-bgColor border-2 border-black focus:shadow-xl;
   direction: rtl;
 }
 
