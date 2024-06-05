@@ -52,13 +52,13 @@ export default function BranchesList() {
                         </>
                     ) : (
                             <>
-                                <div className="branches">
+                                <div className="branches flex items-center justify-center flex-wrap w-full">
                                     {branches.map((branch, ind) => (
-                                        <div key={ind} className="branch flex flex-col items-center justify-center">
-                                            <Image src={"/branch.png"} width={100} height={100} alt='Branch' />
-                                            <h3>{branch.name}</h3>
+                                        <div key={ind} className="branch cursor-pointer flex flex-col items-center justify-center p-2 w-48 m-3 border-2 border-black rounded-xl hover:shadow-xl duration-700">
+                                            <Image src={"/branch.png"} width={50} height={50} alt='Branch' />
+                                            <h3 className='my-1'>{branch.name}</h3>
                                             <h3>{branch.phone}</h3>
-                                            <p className='text-xs'>{branch.location}</p>
+                                            <p className='text-xs text-center' title={`${branch.location}`}>{branch.location.slice(0,40)}..</p>
                                         </div>
                                     ))}
                                 </div>

@@ -22,7 +22,7 @@ textarea {
 }
 
 .addBtn {
-  @apply bg-bgColor text-black flex items-center justify-center font-medium sm:m-2 py-1 px-4 border-2 border-black rounded-full cursor-pointer text-sm m-0.5 hover:bg-black hover:text-bgColor duration-700;
+  @apply bg-bgColor text-black flex items-center justify-center shadow-xl font-medium sm:m-2 py-1 px-4 border-2 border-black rounded-full cursor-pointer text-sm m-0.5 hover:bg-black hover:text-bgColor duration-700;
 }
 .addBtn svg {
   @apply ml-2 duration-700;

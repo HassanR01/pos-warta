@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import AddUser from './AddUser'
 import Loading from '../main/Loading'
+import Image from 'next/image'
 
 export default function UsersPage() {
     const [users, setusers] = useState(null)
@@ -64,7 +65,7 @@ export default function UsersPage() {
         }
 
         const secPassword = (text) => {
-            return "*".repeat(text.length)
+            return "*".repeat(text?.length)
         }
 
         return (
@@ -85,10 +86,11 @@ export default function UsersPage() {
                             <AddUser Users={users} Branches={branches} />
                         </>
                     ) : (
-                        <div className="usersList">
+                        <div className="usersList w-full flex flex-wrap items-center justify-center">
                             {users.map((user, ind) => (
-                                <div className="user" key={ind}>
-                                    <h2>{user.name}</h2>
+                                <div className="user m-4 flex flex-col items-center justify-center p-2 border-2 border-black rounded-xl w-40 cursor-pointer hover:shadow-xl duration-700" key={ind}>
+                                    <Image src={"/man.png"} width={50} height={50} alt='Person' />
+                                    <h2 className='my-1'>{user.name}</h2>
                                     <h4>{user.username}</h4>
                                     <h4>{secPassword(user.password)}</h4>
                                 </div>

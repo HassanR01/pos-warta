@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import AddItem from './AddItem'
 import AddCategory from './AddCategory'
 import Loading from '../main/Loading'
+import Image from 'next/image'
 
 export default function ItemsPage() {
     const [filter, setfilter] = useState('')
@@ -65,6 +66,12 @@ export default function ItemsPage() {
             branchesName.push(branch.name)
         })
 
+        const FilterdItems = items.filter(item => {
+            const matchedName = item.title.includes(filter)
+            const matchedCategory = !category || item.category === category
+            return matchedCategory && matchedName
+        })
+
         return (
             <>
                 <motion.div
@@ -91,9 +98,10 @@ export default function ItemsPage() {
                             ))}
                         </ul>
                     </div>
-                    <div className="itemsList">
-                        {items.map((item, ind) => (
-                            <div className="item" key={ind}>
+                    <div className="itemsList my-10 flex items-center justify-center flex-wrap">
+                        {FilterdItems.map((item, ind) => (
+                            <div className="item flex flex-col items-center justify-center p-2 m-3 border-2 border-black rounded-xl w-40 hover:shadow-xl duration-700 cursor-pointer" key={ind}>
+                                <Image src={item.category === 'برجر' ? "/burger.png": item.category === 'فرايز' ? "/fries.png" : item.category === "وجبات" ? "/meal.png" : "/offer.png"} width={50} height={50} alt='Item Icon' />
                                 <h2>{item.title}</h2>
                             </div>
                         ))}
@@ -119,6 +127,8 @@ export default function ItemsPage() {
                         </>
                     )}
                 </div>
+
+                {/* Edit Component */}
             </>
         )
     }
