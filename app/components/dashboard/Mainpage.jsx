@@ -69,7 +69,7 @@ export default function Mainpage() {
                 )}
 
                 {section === 'POS' && (
-                    <section className='pos w-full h-full flex flex-col items-center justify-start py-3 px-5'>
+                    <section className='pos w-full h-full flex flex-col items-center justify-start py-3 px-5 overflow-auto'>
                         {/* Content */}
                         <POSPage User={user} />
 

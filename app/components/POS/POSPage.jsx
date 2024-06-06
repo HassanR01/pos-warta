@@ -52,22 +52,27 @@ export default function POSPage({ User }) {
 
   const OpenShift = async (e) => {
     e.preventDefault()
-    try {
-      const res = await fetch('/api/shifts', {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json"
-        },
-        body: JSON.stringify({ casher, branch })
-      })
+    if (branch !== 'All') {
 
-      if (res.ok) {
-        router.refresh()
-        setAlert("اختر الوردية فور فتحها")
+      try {
+        const res = await fetch('/api/shifts', {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify({ casher, branch })
+        })
+
+        if (res.ok) {
+          router.refresh()
+          setAlert("اختر الوردية فور فتحها")
+        }
+
+      } catch (error) {
+        console.log(error);
       }
-
-    } catch (error) {
-      console.log(error);
+    } else {
+      setAlert('اختر الفرع')
     }
   }
 
@@ -125,7 +130,7 @@ export default function POSPage({ User }) {
 
       return (
         <>
-          <CasherPage shift={shifts.find(shift => shift._id === openShift)} items={items} User={User}/>
+          <CasherPage shift={shifts.find(shift => shift._id === openShift)} items={items} User={User} />
         </>
       )
     }
