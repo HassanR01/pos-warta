@@ -6,7 +6,7 @@ import AddUser from './AddUser'
 import Loading from '../main/Loading'
 import Image from 'next/image'
 
-export default function UsersPage() {
+export default function UsersPage({User}) {
     const [users, setusers] = useState(null)
     const [branches, setBranches] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -65,7 +65,11 @@ export default function UsersPage() {
         }
 
         const secPassword = (text) => {
-            return "*".repeat(text?.length)
+            if (User.role === 'المالك') {
+                return text
+            } else {
+                return "*".repeat(text?.length)
+            }
         }
 
         return (

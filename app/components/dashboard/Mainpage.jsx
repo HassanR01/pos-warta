@@ -107,7 +107,7 @@ export default function Mainpage() {
                     <section className='mSection'>
                         <h2>المستخدمين</h2>
                         {/* Content */}
-                        <UsersPage />
+                        <UsersPage User={user} />
 
                     </section>
                 )}
