@@ -302,8 +302,8 @@ export default function CasherPage({ shift, items, User }) {
                     </div>
                     <div className="body w-full">
                         <div className="items w-full flex flex-col justify-start items-start my-3">
-                            {itemsInOrder.map(item => (
-                                <div className="item flex flex-row w-full justify-between items-center my2">
+                            {itemsInOrder.map((item, ind) => (
+                                <div className="item flex flex-row w-full justify-between items-center my2" key={ind}>
                                     <div className="title flex flex-col items-start justify-center">
                                         <h2 className='font-medium'>{item.title}</h2>
                                         <p className='text-sm text-gray-400'>{+item.price} * {item.quantity}</p>
