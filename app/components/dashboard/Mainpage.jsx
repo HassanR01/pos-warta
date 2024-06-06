@@ -5,9 +5,10 @@ import UsersPage from '../users/UsersPage'
 import { useRouter } from 'next/navigation'
 import Loading from '../main/Loading'
 import BranchesList from '../branch/BranchesList'
+import ToggleFullScreen from '../buttons/ToggleFullScreen'
 
 export default function Mainpage() {
-    const [section, setSection] = useState('Users')
+    const [section, setSection] = useState('POS')
     const [openMenu, setOpenMenu] = useState(false)
     const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
@@ -109,7 +110,7 @@ export default function Mainpage() {
 
                     </section>
                 )}
-
+                <ToggleFullScreen />
             </>
         )
     }
