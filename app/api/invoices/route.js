@@ -3,9 +3,9 @@ import Invoice from "@/models/invoice"
 import { NextResponse } from "next/server"
 
 export async function POST(req) {
-    const { client, items, discount, taxs, delivery, user, payment, branch } = await req.json()
+    const { client, items, total, discount, taxs, delivery, user, payment, branch } = await req.json()
     await connectMongoDB()
-    await Invoice.create({ client, items, discount, taxs, delivery, user, payment, branch })
+    await Invoice.create({ client, items, total, discount, taxs, delivery, user, payment, branch })
     return NextResponse.json({ message: "Invoice Created" }, { status: 201 })
 }
 

@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const invoiceSchema = new Schema({
     client: String,
     items: [],
+    total: Number,
     discount: {
         type: Number,
         default: 0,
