@@ -220,7 +220,7 @@ export default function CasherPage({ shift, items, User }) {
                                     <div onClick={() => {
                                         AddItemToOrder(item.title, priceInTheBranch(item.prices), quantity, item.category)
                                         setQuantity(1)
-                                    }} className="icon flex items-center justify-center p-1 sm:p-1 rounded-full cursor-pointer hover:shadow-xl duration-700 bg-black text-bgColor cursor-pointer mr-2">
+                                    }} className="icon flex items-center justify-center p-1 sm:p-1 rounded-full hover:shadow-xl duration-700 bg-black text-bgColor cursor-pointer mr-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">   <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /> </svg>
                                     </div>
                                 </div>
