@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import Loading from '../main/Loading'
 import BranchesList from '../branch/BranchesList'
 import ToggleFullScreen from '../buttons/ToggleFullScreen'
+import POSPage from '../POS/POSPage'
 
 export default function Mainpage() {
     const [section, setSection] = useState('POS')
@@ -37,7 +38,7 @@ export default function Mainpage() {
                 <div onClick={() => setOpenMenu(!openMenu)} className={`showbtn duration-700 absolute top-5 right-6 ${openMenu ? 'text-bgColor' : 'text-mainColor'} z-50 cursor-pointer`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7">   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" /> </svg>
                 </div>
-                <section onClick={() => setOpenMenu(!openMenu)} className={`menu bg-mainColor absolute h-full p-4 rounded-l-2xl flex flex-col items-center justify-between ${openMenu ? '' : 'translate-x-20'} duration-700 z-40`}>
+                <section onClick={() => setOpenMenu(!openMenu)} className={`menu bg-mainColor h-full p-4 rounded-l-2xl flex flex-col items-center justify-between ${openMenu ? '' : 'translate-x-20'} absolute duration-700 z-40`}>
                     <div>
 
                     </div>
@@ -68,9 +69,9 @@ export default function Mainpage() {
                 )}
 
                 {section === 'POS' && (
-                    <section className='pos w-full h-full flex flex-col items-start justify-start'>
+                    <section className='pos w-full h-full flex flex-col items-center justify-start py-3 px-5'>
                         {/* Content */}
-
+                        <POSPage User={user} />
 
                     </section>
                 )}

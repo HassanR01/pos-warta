@@ -78,7 +78,7 @@ export default function ItemsPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="itemsListContainer w-full lg:w-11/12 h-5/6 p-3 bg-slate-200 rounded-2xl"
+                    className="itemsListContainer duration-700 lg:w-11/12 h-5/6 p-3 bg-slate-200 rounded-2xl"
                 >
                     <div className="head flex items-center justify-between flex-wrap my-10">
                         <div className="searchbar flex items-center justify-center w-full lg:w-auto mb-2">

@@ -74,7 +74,7 @@ export default function UsersPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="usersListContainer w-full lg:w-11/12 h-5/6 p-3 bg-slate-200 rounded-2xl"
+                    className="usersListContainer duration-700 lg:w-11/12 h-5/6 p-3 bg-slate-200 rounded-2xl"
                 >
                     <div className="head flex items-center justify-between flex-wrap my-10">
                         <div className="addBtns flex items-center justify-center">
