@@ -41,6 +41,22 @@ export default function CasherPage({ shift, items, User }) {
         return totalIncome() - totalExpenses()
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Handle Expenses **********************
     const [reason, setreason] = useState('')
     const [value, setvalue] = useState(0)
@@ -88,6 +104,9 @@ export default function CasherPage({ shift, items, User }) {
 
             if (resShift.ok && resExpense.ok) {
                 setAlert('')
+                setreason('')
+                setvalue(0)
+                setdescription('')
                 setShowAddExpense(false)
             }
 
@@ -96,16 +115,23 @@ export default function CasherPage({ shift, items, User }) {
         }
     }
 
-
-
-
-
-
-
-
-
-
     // Handle Expenses **********************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -211,6 +237,46 @@ export default function CasherPage({ shift, items, User }) {
 
     // Handle Invoice ************************
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Delete Shift *************************
+    const DeleteShift = async (id) => {
+        const confirmed = confirm('هل تريد إلغاء الوردية؟\nلن تتمكن من استعادة البيانات مجدداً')
+        if (confirmed) {
+
+            try {
+                const res = await fetch(`/api/shifts/${shift._id}`, {
+                   method: 'DELETE'
+                })
+                
+                if (res.ok) {
+                    location.reload()
+                }
+                
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    }
+    // Delete Shift *************************
+
+
+
+
+
+
     const FormatedDate = (date) => {
         const CreateDate = new Date(date)
         // Format the date
@@ -225,6 +291,7 @@ export default function CasherPage({ shift, items, User }) {
                 <h2 className='text-mainColor text-xs m-2'>التاريخ: {FormatedDate(new Date())}</h2>
                 <h2 className='text-mainColor text-xs m-2'>الكاشير:{User.name}</h2>
                 <h2 className='text-mainColor text-xs m-2'>قام بفتح الوردية: {shift.casher}</h2>
+                {User.role === "المالك" && <div onClick={() => DeleteShift(shift._id)} className="btn text-xs p-1 bg-red-500 text-bgColor font-bold rounded-lg cursor-pointer">حذف الوردية</div>}
             </div>
             <div className="options w-10/12 bg-mainColor p-1 mt-5 rounded-full flex items-center justify-center">
                 <ul className='flex items-center justify-center w-full'>
