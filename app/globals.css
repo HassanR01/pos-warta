@@ -37,11 +37,7 @@ textarea {
 }
 
 @media print {
-  .InvoiceContainer {
-    width: 100%;
-    height: 100%;
-  }
-  .InvoiceContainer > *{
+  .InvoiceContainer > * {
     display: none;
   }
   .InvoiceContainer .Invoice {
