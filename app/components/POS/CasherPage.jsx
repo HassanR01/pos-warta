@@ -6,6 +6,7 @@ export default function CasherPage({ shift, items, User }) {
     const [category, setCategory] = useState('')
     const [invoices, setInvoices] = useState(shift.invoices)
     const [expenses, setExpenses] = useState(shift.expenses)
+    const [showAddExpense, setShowAddExpense] = useState(false)
     const [alert, setAlert] = useState('')
 
     const FilterdItems = items.filter(item => {
@@ -31,7 +32,7 @@ export default function CasherPage({ shift, items, User }) {
     const totalExpenses = () => {
         let totalShiftExpense = 0
         expenses.map(expense => {
-            totalShiftExpense = totalShiftExpense + expense.value
+            totalShiftExpense = totalShiftExpense + +expense.value
         })
         return totalShiftExpense
     }
@@ -39,6 +40,77 @@ export default function CasherPage({ shift, items, User }) {
     const totalRefund = () => {
         return totalIncome() - totalExpenses()
     }
+
+    // Handle Expenses **********************
+    const [reason, setreason] = useState('')
+    const [value, setvalue] = useState(0)
+    const [description, setdescription] = useState('')
+
+    const expense = {
+        reason: reason,
+        value: value,
+        description: description,
+        user: User.name,
+        branch: shift.branch,
+    }
+
+
+    const AddExpense = (e) => {
+        e.preventDefault()
+
+        if (value > 0) {
+            const expensesHandle = [...expenses, expense]
+            setExpenses(expensesHandle)
+            setAlert('الرجاء تأكيد الصرف')
+        } else {
+            setAlert('كل البيانات مطلوبة')
+        }
+    }
+
+    const sendExpense = async () => {
+        setAlert('يتم مراجعة البيانات..')
+        try {
+            const resExpense = await fetch('/api/expenses', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(expense)
+            })
+
+            const resShift = await fetch(`/api/shifts/${shift._id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({ expenses })
+            })
+
+            if (resShift.ok && resExpense.ok) {
+                setAlert('')
+                setShowAddExpense(false)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    // Handle Expenses **********************
+
+
+
+
+
 
     // Handle Invoice ************************
     const [itemsInOrder, setItemsInOrder] = useState([])
@@ -123,14 +195,12 @@ export default function CasherPage({ shift, items, User }) {
                 body: JSON.stringify({ invoices })
             })
 
-            if (resInvoice && resShift) {
+            if (resInvoice.ok && resShift.ok) {
                 setAlert('تم إنشاء الطلب بنجاح')
                 setItemsInOrder([])
                 setDiscount(0)
-                setDiscount(0)
+                setDelivery(0)
                 window.print()
-                setShowInvoice(false)
-
             }
 
         } catch (error) {
@@ -153,12 +223,12 @@ export default function CasherPage({ shift, items, User }) {
         <>
             <div className="data w-full flex items-center justify-center flex-wrap">
                 <h2 className='text-mainColor text-xs m-2'>التاريخ: {FormatedDate(new Date())}</h2>
-                <h2 className='text-mainColor text-xs m-2'>الكاشير:{User.name }</h2>
-                <h2 className='text-mainColor text-xs m-2'>قام بفتح الوردية: {shift.casher }</h2>
+                <h2 className='text-mainColor text-xs m-2'>الكاشير:{User.name}</h2>
+                <h2 className='text-mainColor text-xs m-2'>قام بفتح الوردية: {shift.casher}</h2>
             </div>
             <div className="options w-10/12 bg-mainColor p-1 mt-5 rounded-full flex items-center justify-center">
                 <ul className='flex items-center justify-center w-full'>
-                    <li className='p-2 text-bgColor cursor-pointer mx-2 hover:text-mainColor hover:bg-bgColor rounded-full'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg></li>
+                    <li onClick={() => setShowAddExpense(!showAddExpense)} className='p-2 text-bgColor cursor-pointer mx-2 hover:text-mainColor hover:bg-bgColor rounded-full'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg></li>
                     <li className='p-2 text-bgColor cursor-pointer mx-2 hover:text-mainColor hover:bg-bgColor rounded-full'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 0 0-1.883 2.542l.857 6a2.25 2.25 0 0 0 2.227 1.932H19.05a2.25 2.25 0 0 0 2.227-1.932l.857-6a2.25 2.25 0 0 0-1.883-2.542m-16.5 0V6A2.25 2.25 0 0 1 6 3.75h3.879a1.5 1.5 0 0 1 1.06.44l2.122 2.12a1.5 1.5 0 0 0 1.06.44H18A2.25 2.25 0 0 1 20.25 9v.776" /> </svg></li>
                     <li className='p-2 text-bgColor cursor-pointer mx-2 hover:text-mainColor hover:bg-bgColor rounded-full'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">   <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /> </svg></li>
                 </ul>
@@ -173,7 +243,7 @@ export default function CasherPage({ shift, items, User }) {
                 </div>
                 <div className="info w-72 h-32 cursor-pointer flex flex-col m-2 items-start justify-between p-4 shadow-xl rounded-xl border bg-gray-100">
                     <h2 className='text-2xl font-bold'>المصاريف</h2>
-                    <h3 className='text-xl text-red-500 font-bold'>{shift.expenses.length} ج.م</h3>
+                    <h3 className='text-xl text-red-500 font-bold'>{totalExpenses()} ج.م</h3>
                     <div className="color w-full p-2 bg-red-500 rounded-full">
                     </div>
                 </div>
@@ -204,7 +274,7 @@ export default function CasherPage({ shift, items, User }) {
                         {FilterdItems.map((item, ind) => (
                             <div className="item flex flex-col items-center justify-center p-2 m-1 lg:m-3 border-2 border-black rounded-xl w-40 hover:shadow-xl duration-700 cursor-pointer" key={ind}>
                                 <Image src={item.category === 'برجر' ? "/burger.png" : item.category === 'فرايز' ? "/fries.png" : item.category === "وجبات" ? "/meal.png" : "/offer.png"} width={50} height={50} alt='Item Icon' />
-                                <h2>{item.title}</h2>
+                                <h2 className='text-center text-xs my-1'>{item.title}</h2>
                                 <h2 className='font-bold'>{priceInTheBranch(item.prices)} ج.م</h2>
                                 <div className="AddQuantity flex justify-center items-center mt-2">
                                     <div className="quantity flex items-center justify-center">
@@ -287,11 +357,11 @@ export default function CasherPage({ shift, items, User }) {
                             <h3>{mainTotalItemsPrice()} ج.م</h3>
                         </div>
                     </div>
-                    <button onClick={() => AddInvoice()} className='addBtn w-full'>{alert ? alert : "إنشاء الفاتورة"}</button>
+                    <button onClick={() => AddInvoice()} className='submitBtn w-full'>{alert ? alert : "إنشاء الفاتورة"}</button>
                 </div>
             </div>
             <div className={`InvoiceContainer absolute overflow-hidden top-0 left-0 bg-white flex flex-col items-center justify-center ${showInvoice ? "w-full h-full rounded-none" : "w-0 h-0  rounded-xl"} duration-700`}>
-                {/* {showInvoice && <button onClick={() => setShowInvoice(!showInvoice)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>} */}
+                {showInvoice && <button onClick={() => setShowInvoice(!showInvoice)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>}
                 <div className="Invoice w-80 p-3 rounded-xl flex items-center justify-center flex-col border-2 border-mainColor">
                     <div className="head flex items-center justify-between w-full">
                         <Image src={'/bwLogo.png'} width={80} height={80} alt='logo' />
@@ -341,8 +411,31 @@ export default function CasherPage({ shift, items, User }) {
                         </div>
                     </div>
                 </div>
-                <button onClick={() => sendOrderAndPrint()} className='addBtn w-80'>طباعة الفاتورة</button>
+                <button onClick={() => sendOrderAndPrint()} className='submitBtn w-80'>طباعة الفاتورة</button>
             </div>
+
+            <div className={`AddExpenseContainer absolute overflow-hidden top-0 left-0 bg-white flex flex-col items-center justify-center ${showAddExpense ? "w-full h-full rounded-none" : "w-0 h-0  rounded-xl"} duration-700`}>
+                {showAddExpense && <button onClick={() => setShowAddExpense(!showAddExpense)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>}
+                <form onSubmit={AddExpense}>
+                    <div className="reason w-full mb-3 lg:mb-5">
+                        <label className='text-xl font-semibold' htmlFor="reason">أذكر سبب الصرف:</label>
+                        <input className='w-full my-2' type="text" name="reason" value={reason} onChange={(e) => setreason(e.target.value)} id="title" placeholder='سبب الصرف' />
+                    </div>
+                    <div className="value w-full mb-3 lg:mb-5">
+                        <label className='text-xl font-semibold' htmlFor="value">قيمة الصرف:</label>
+                        <input className='w-full my-2' type="number" name="value" value={value} onChange={(e) => setvalue(e.target.value)} id="title" placeholder='القيمة' />
+                    </div>
+                    <div className="description w-full mb-3 lg:mb-5">
+                        <label className='text-xl font-semibold' htmlFor="description">تفاصيل اخرى :</label>
+                        <textarea className='my-2 w-full' name="description" id="description" value={description} onChange={(e) => setdescription(e.target.value)} placeholder='تفاصيل اخرى'></textarea>
+                    </div>
+                    <button className='submitBtn w-full'>{alert ? alert : "إضافة الصرف"}</button>
+                </form>
+                <div className="btns w-80 mt-3">
+                    <button onClick={() => sendExpense()} className='submitBtn'>تأكيد الصرف</button>
+                </div>
+            </div>
+
         </>
     )
 }

@@ -102,7 +102,7 @@ export default function ItemsPage() {
                         {FilterdItems.map((item, ind) => (
                             <div className="item flex flex-col items-center justify-center p-2 m-3 border-2 border-black rounded-xl w-40 hover:shadow-xl duration-700 cursor-pointer" key={ind}>
                                 <Image src={item.category === 'برجر' ? "/burger.png": item.category === 'فرايز' ? "/fries.png" : item.category === "وجبات" ? "/meal.png" : "/offer.png"} width={50} height={50} alt='Item Icon' />
-                                <h2>{item.title}</h2>
+                                <h2 className='text-center text-xs my-1'>{item.title}</h2>
                             </div>
                         ))}
                     </div>
