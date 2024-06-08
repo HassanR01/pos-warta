@@ -12,7 +12,7 @@ export default function ExpensesPage({ User }) {
     const [users, setusers] = useState(null)
     const [branches, setBranches] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
-
+    const router = useRouter()
 
     const [openAddExpense, setOpenAddExpense] = useState(false)
     const [openAddSalary, setOpenAddSalary] = useState(false)
@@ -87,41 +87,41 @@ export default function ExpensesPage({ User }) {
             return dateB - dateA;
         });
 
-const Deleteexpenses = async (id) => {
-    const confirmed = confirm('هل تريد حذف الصرف ؟')
-    if (confirmed) {
-     try {
-        const res = await fetch(`/api/expenses?id=${id}` , {
-            method: "DELETE"
-        })
+        const Deleteexpenses = async (id) => {
+            const confirmed = confirm('هل تريد حذف الصرف ؟')
+            if (confirmed) {
+                try {
+                    const res = await fetch(`/api/expenses?id=${id}`, {
+                        method: "DELETE"
+                    })
 
-        if (res.ok) {
-            alert('تم الحذف بنجاح برجاء إعادة تحميل الصفحة للتأكد')
-            useRouter().refresh()
+                    if (res.ok) {
+                        alert('تم الحذف بنجاح برجاء إعادة تحميل الصفحة للتأكد')
+                        router.refresh()
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
         }
-     } catch (error) {
-        console.log(error);
-     }   
-    }
-}
-        
-const Deletesalaries = async (id) => {
-    const confirmed = confirm('هل تريد حذف المرتب ؟')
-    if (confirmed) {
-     try {
-        const res = await fetch(`/api/salaries?id=${id}` , {
-            method: "DELETE"
-        })
 
-        if (res.ok) {
-            alert('تم الحذف بنجاح برجاء إعادة تحميل الصفحة للتأكد')
-            useRouter().refresh()
+        const Deletesalaries = async (id) => {
+            const confirmed = confirm('هل تريد حذف المرتب ؟')
+            if (confirmed) {
+                try {
+                    const res = await fetch(`/api/salaries?id=${id}`, {
+                        method: "DELETE"
+                    })
+
+                    if (res.ok) {
+                        alert('تم الحذف بنجاح برجاء إعادة تحميل الصفحة للتأكد')
+                        router.refresh()
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
         }
-     } catch (error) {
-        console.log(error);
-     }   
-    }
-}
 
         return (
             <>
@@ -213,7 +213,7 @@ const Deletesalaries = async (id) => {
                     {openAddSalary && (
                         <>
                             <button onClick={() => setOpenAddSalary(!openAddSalary)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>
-                        <AddSalary branches={branches} User={User} users={users} />
+                            <AddSalary branches={branches} User={User} users={users} />
                         </>
                     )}
                 </div>
