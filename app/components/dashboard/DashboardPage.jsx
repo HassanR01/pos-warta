@@ -16,7 +16,7 @@ export default function DashboardPage({ User }) {
     const [branches, setBranches] = useState(null)
 
     const [isLoading, setIsLoading] = useState(true)
-    const [filterBranch, setFilterBranch] = useState(User.branch)
+    const [filterBranch, setFilterBranch] = useState("")
 
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
