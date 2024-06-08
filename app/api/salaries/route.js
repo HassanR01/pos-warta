@@ -15,3 +15,9 @@ export async function GET(){
     return NextResponse.json({salaries})
 }
 
+export async function DELETE(req) {
+    const id = req.nextUrl.searchParams.get("id")
+    await connectMongoDB()
+    await Salary.findByIdAndDelete(id)
+    return NextResponse.json({ message: "Salary Deleted" }, { status: 200 })
+}

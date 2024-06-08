@@ -15,3 +15,9 @@ export async function GET(){
     return NextResponse.json({expenses})
 }
 
+export async function DELETE(req) {
+    const id = req.nextUrl.searchParams.get("id")
+    await connectMongoDB()
+    await Expense.findByIdAndDelete(id)
+    return NextResponse.json({message: "Expense Deleted"} , {status: 200})
+}
