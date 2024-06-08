@@ -141,8 +141,10 @@ export default function CasherPage({ shift, items, User }) {
     // Handle Invoice ************************
     const [itemsInOrder, setItemsInOrder] = useState([])
     const [quantity, setQuantity] = useState(1)
+    const [client, setClient] = useState('Take Away')
     const [discount, setDiscount] = useState(0)
     const [taxs, setTaxt] = useState(0)
+    const [payment, setPayment] = useState('Cash')
     const [delivery, setDelivery] = useState(0)
 
     const AddItemToOrder = (title, price, quantity, category) => {
@@ -180,14 +182,14 @@ export default function CasherPage({ shift, items, User }) {
     }
 
     const invoice = {
-        client: 'take-away',
+        client: client,
         items: [...itemsInOrder],
         total: mainTotalItemsPrice(),
         discount: discount,
         taxs: taxs,
         delivery: delivery,
         user: User.name,
-        payment: 'Cash',
+        payment: payment,
         branch: shift.branch,
     }
 
@@ -404,6 +406,14 @@ export default function CasherPage({ shift, items, User }) {
                 {/* تفاصيل الدفع */}
                 <div className="CheckoutCash w-full lg:w-auto lg:min-w-96 border-mainColor rounded-xl p-3 border">
                     <h2>تفاصيل الطلب:</h2>
+                    <div className="client flex items-center justify-between w-full my-3">
+                        <h3>العميل: </h3>
+                        <select className='w-60' name="client" id="client" value={client} onChange={(e) => setClient(e.target.value)}>
+                            <option value="Take Away">Take Away</option>
+                            <option value="Talabat">Talabat</option>
+                            <option value="El-menus">El-menus</option>
+                        </select>
+                    </div>
                     <div className="orderItemsList w-full min-h-72 bg-slate-100 p-1 rounded-xl my-3">
                         {itemsInOrder.map((item, ind) => (
                             <div className="item p-1 my-1 bg-bgColor rounded-xl flex items-center justify-between w-full" key={ind}>
@@ -458,6 +468,13 @@ export default function CasherPage({ shift, items, User }) {
                             <h3>اجمالي الفاتورة</h3>
                             <h3>{mainTotalItemsPrice()} ج.م</h3>
                         </div>
+                        <div className="paymentMethod flex items-center justify-between w-full my-3">
+                            <h2 className='text-lg font-semibold'>الدفع: </h2>
+                            <div className="btns flex items-center justify-center">
+                                <button onClick={() => setPayment("Visa")} className={`${payment === 'Visa' ? "bg-black text-bgColor" : "text-black bg-bgColor"} cbtn border-2 border-black`}>Visa</button>
+                                <button onClick={() => setPayment("Cash")} className={`${payment === 'Cash' ? "bg-black text-bgColor" : "text-black bg-bgColor"} cbtn border-2 border-black`}>Cash</button>
+                            </div>
+                        </div>
                     </div>
                     <button onClick={() => AddInvoice()} className='submitBtn w-full'>{alert ? alert : "إنشاء الفاتورة"}</button>
                 </div>
@@ -472,8 +489,12 @@ export default function CasherPage({ shift, items, User }) {
                             <p>{FormatedDate(new Date())}</p>
                         </div>
                     </div>
+                    <div className="flex font-medium text-sm border-b-2 pt-1 items-center justify-between w-full">
+                        <h3 className='font-semibold'>العميل</h3>
+                        <h3>{client}</h3>
+                    </div>
                     <div className="body w-full">
-                        <div className="items w-full flex flex-col justify-start items-start my-3">
+                        <div className="items w-full flex flex-col justify-start items-start my-2">
                             {itemsInOrder.map((item, ind) => (
                                 <div className="item flex flex-row w-full justify-between items-center my2" key={ind}>
                                     <div className="title flex flex-col items-start justify-center">
@@ -506,6 +527,10 @@ export default function CasherPage({ shift, items, User }) {
                             <div className="flex font-bold text-lg border-t-2 pt-1 items-center mb-2 justify-between w-full">
                                 <h3 className='font-semibold'>إجمالي الفاتورة</h3>
                                 <h3>{mainTotalItemsPrice()} L.E</h3>
+                            </div>
+                            <div className="flex font-bold text-sm border-t-2 pt-1 items-center mb-2 justify-between w-full">
+                                <h3 className='font-semibold'>طريقة الدفع</h3>
+                                <h3>{payment}</h3>
                             </div>
                         </div>
                         <div className="foot">
@@ -564,6 +589,8 @@ export default function CasherPage({ shift, items, User }) {
                         {invoices.map((invoice, ind) => (
                             <div key={ind} className="invoice w-full flex flex-col items-start justify-start my-2 p-2">
                                 <h4 className='text-xs text-gray-500'>الكاشير: {invoice.user}</h4>
+                                <h4 className='text-xs text-gray-500'>العميل: {invoice.client}</h4>
+                                <h4 className='text-xs text-gray-500'>طريقة الدفع: {invoice.payment}</h4>
                                 <div className="totalInvoice flex items-center justify-between w-full">
                                     <h2 className='text-lg font-semibold mb-2'>إجمالي الفاتورة</h2>
                                     <h3 className='text-lg'>{invoice.total} L.E</h3>

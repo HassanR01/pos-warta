@@ -183,7 +183,7 @@ export default function DashboardPage({ User }) {
             <>
                 <div className="filterBar">
                     <DateRangePicker onDateChange={handleDateChange} />
-                    <div className="description w-full mb-3 lg:mb-5">
+                    <div className="branch w-full mb-3 lg:mb-5">
                         <select className='my-2 w-full' name="branch" id="branch" value={filterBranch} onChange={(e) => setFilterBranch(e.target.value)}>
                             <option value="">اختر الفرع</option>
                             {branchesName.map((branch, ind) => (
