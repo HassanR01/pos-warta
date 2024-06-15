@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 export default function CasherPage({ shift, items, User }) {
     const [category, setCategory] = useState('')
     const [invoices, setInvoices] = useState(shift.invoices)
+    const [showInvoices, setShowInvoices] = useState(false)
     const [expenses, setExpenses] = useState(shift.expenses)
     const [showAddExpense, setShowAddExpense] = useState(false)
     const [alert, setAlert] = useState('')
@@ -143,7 +144,7 @@ export default function CasherPage({ shift, items, User }) {
     const [quantity, setQuantity] = useState(1)
     const [client, setClient] = useState('Take Away')
     const [discount, setDiscount] = useState(0)
-    const [taxs, setTaxt] = useState(0)
+    const [taxs, setTaxs] = useState(0)
     const [payment, setPayment] = useState('Cash')
     const [delivery, setDelivery] = useState(0)
 
@@ -237,6 +238,31 @@ export default function CasherPage({ shift, items, User }) {
     }
 
 
+    const updateShift = async () => {
+        try {
+            const resShift = await fetch(`/api/shifts/${shift._id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": 'application/json'
+                },
+                body: JSON.stringify({ invoices })
+            })
+
+            if (resShift.ok) {
+                setAlert('تم تحديث الشيفت بنجاح')
+                setItemsInOrder([])
+                setDiscount(0)
+                setDelivery(0)
+                setShowInvoice(false)
+            }
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
     // Handle Invoice ************************
 
 
@@ -314,6 +340,19 @@ export default function CasherPage({ shift, items, User }) {
     }
     // Delete Shift *************************
 
+    // Delete Invoice ***********************
+    const [indexToDelete, setIndexToDelete] = useState(null)
+    const DeleteInvoiceFromShift = (id) => {
+        const handleInvoices = [...invoices]
+        handleInvoices.splice(id, 1)
+        setInvoices(handleInvoices)
+        setIndexToDelete(null)
+    }
+
+
+
+
+    // Delete Invoice ***********************
 
 
 
@@ -343,7 +382,7 @@ export default function CasherPage({ shift, items, User }) {
             </div>
             <h2 className='font-bold text-2xl text-start w-full mt-5'>تفاصيل الوردية:</h2>
             <div className="Info flex items-center justify-center sm:justify-start flex-wrap my-5 w-full">
-                <div className="info w-72 h-32 cursor-pointer flex flex-col m-2 items-start justify-between p-4 shadow-xl rounded-xl border bg-gray-100">
+                <div onClick={() => setShowInvoices(!showInvoices)} className="info w-72 h-32 cursor-pointer flex flex-col m-2 items-start justify-between p-4 shadow-xl rounded-xl border bg-gray-100">
                     <h2 className='text-2xl font-bold'>الطلبات</h2>
                     <h3 className='text-xl text-yellow-800 font-bold'>{invoices.length} طلب</h3>
                     <div className="color w-full p-2 bg-yellow-500 rounded-full">
@@ -367,6 +406,31 @@ export default function CasherPage({ shift, items, User }) {
                     <div className="color w-full p-2 bg-green-500 rounded-full">
                     </div>
                 </div>
+            </div>
+            <div className="orders w-full">
+                {showInvoices && (
+                    <div className="invoices w-full flex items-start justify-center flex-col">
+                        <h2 className='text-xl mb-4 font-bold'>الفواتير:</h2>
+                        {invoices.map((invoice, ind) => (
+                            <div onClick={() => {
+                                setItemsInOrder(invoice.items)
+                                setPayment(invoice.setPayment)
+                                setDelivery(invoice.delivery)
+                                setTaxs(invoice.taxs)
+                                setClient(invoice.client)
+                                setDiscount(invoice.discount)
+                                setShowInvoice(!showInvoice)
+                                setIndexToDelete(ind)
+                            }} className="invoice cursor-pointer hover:bg-slate-50 hover:border-mainColor border-2 bg-gray-300 w-full p-2 flex items-center justify-between rounded-xl my-1" key={ind}>
+                                <h4><span className='font-bold items-center'>الإجمالي: </span>{invoice.total} ج.م</h4>
+                                <h4><span className='font-bold items-center'>الاصناف: </span>{invoice.items.length} أصناف</h4>
+                                <h4><span className='font-bold items-center'>طريقة الدفع: </span>{invoice.payment}</h4>
+                                <h4><span className='font-bold items-center'>العميل: </span>{invoice.client}</h4>
+                                <h4 onClick={() => setShowInvoice(!showInvoice)} className='text-green-500 p-1 bg-mainColor rounded-xl cursor-pointer font-bold text-xl'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">   <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" /> </svg></h4>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
             <div className='w-full flex items-start justify-center flex-col lg:flex-row lg:justify-start my-5'>
                 <div className={`itemsList w-full lg:w-8/12 lg:ml-5 border-mainColor rounded-xl p-2 border my-2 lg:my-0`}>
@@ -479,9 +543,9 @@ export default function CasherPage({ shift, items, User }) {
                     <button onClick={() => AddInvoice()} className='submitBtn w-full'>{alert ? alert : "إنشاء الفاتورة"}</button>
                 </div>
             </div>
-            <div className={`InvoiceContainer absolute overflow-hidden top-0 left-0 bg-white flex flex-col items-center justify-center ${showInvoice ? "w-full h-full rounded-none opacity-100" : "opacity-0 w-0 h-0  rounded-xl"} duration-700`}>
+            <div className={`InvoiceContainer absolute overflow-hidden top-0 left-0 bg-white flex flex-col items-center justify-start ${showInvoice ? "w-full h-full rounded-none opacity-100" : "opacity-0 w-0 h-0  rounded-xl"} duration-700`}>
                 {showInvoice && <button onClick={() => setShowInvoice(!showInvoice)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>}
-                <div className="Invoice w-80 p-3 rounded-xl flex items-center justify-center flex-col border-2 border-mainColor">
+                <div className="Invoice w-80 p-3 rounded-xl flex items-center justify-center flex-col border-2 border-mainColor mt-4">
                     <div className="head flex items-center justify-between w-full">
                         <Image src={'/bwLogo.png'} width={80} height={80} alt='logo' />
                         <div className="date">
@@ -540,8 +604,20 @@ export default function CasherPage({ shift, items, User }) {
                 </div>
                 <div className="btns w-80 mt-3">
                     <button onClick={() => sendOrderAndPrint()} className='submitBtn w-80'>طباعة الفاتورة</button>
-                </div>
+                    {User.role === "المالك" && (
+                        <>
+                            {indexToDelete !== null && (
+                                <>
+                                    <button onClick={() => DeleteInvoiceFromShift(indexToDelete)} className='text-textColor my-3 bg-red-500 font-bold text-base flex items-center justify-center py-1 px-4 border-2 rounded-full cursor-pointer w-full'>حذف الفاتورة</button>
+                                </>
 
+                            )}
+                            {showInvoices && (
+                                <button onClick={() => updateShift()} className='text-bgColor my-3 bg-mainColor font-bold text-base flex items-center justify-center py-1 px-4 border-2 rounded-full cursor-pointer w-full'>تحديث الفواتير</button>
+                            )}
+                        </>
+                    )}
+                </div>
             </div>
 
             <div className={`AddExpenseContainer absolute overflow-hidden bottom-0 left-0 bg-white flex flex-col items-center justify-center ${showAddExpense ? "w-full h-full rounded-none opacity-100" : "opacity-0 w-0 h-0  rounded-xl"} duration-700`}>

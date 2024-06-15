@@ -42,6 +42,7 @@ textarea {
   }
   .InvoiceContainer .Invoice {
     display: flex;
+    z-index: 100;
   }
 }
 
