@@ -137,7 +137,60 @@ export default function DashboardPage({ User }) {
         setEndDate(end);
     };
 
+    // Handle Shifts *********************
+    const [showShiftsList, setShowShiftsList] = useState(false)
+    const [report, setreport] = useState(null)
+    const [printingReport, setPrintingReport] = useState(false)
 
+    const shiftTotalIncome = () => {
+        let shiftIncome = 0
+        report.invoices.map((invoice) => {
+            shiftIncome = shiftIncome + invoice.total
+        })
+
+        return shiftIncome
+    }
+
+    const shiftTotalExpenses = () => {
+        let shiftExpenses = 0
+        report.expenses.map((expense) => {
+            shiftExpenses = shiftExpenses + expense.value
+        })
+
+        return shiftExpenses
+    }
+
+    const shiftTotalRefund = (shift) => {
+        let shiftIncome = 0
+        shift.invoices.map((invoice) => {
+            shiftIncome = shiftIncome + invoice.total
+        })
+
+        let shiftExpenses = 0
+        shift.expenses.map((expense) => {
+            shiftExpenses = shiftExpenses + expense.value
+        })
+
+        let ShiftTotal = shiftIncome - shiftExpenses
+
+        return ShiftTotal
+
+    }
+
+    const PrintReport = () => {
+        window.print()
+    }
+
+    // Handle Shifts *********************
+
+
+    const FormatedDate = (date) => {
+        const CreateDate = new Date(date)
+        // Format the date
+        const options = { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' };
+        const formattedDate = CreateDate.toLocaleString('ar-EG', options);
+        return formattedDate
+    }
 
 
 
@@ -178,6 +231,9 @@ export default function DashboardPage({ User }) {
             let totalRefund = TotalIncome() - (TotalExp() + TotalSly())
             return totalRefund
         }
+
+
+
 
         return (
             <>
@@ -225,12 +281,114 @@ export default function DashboardPage({ User }) {
                         <div className="color w-full p-2 bg-yellow-500 rounded-full">
                         </div>
                     </div>
-                    <div className="info w-72 h-32 cursor-pointer flex flex-col m-2 items-start justify-between p-4 shadow-xl rounded-xl border bg-mainColor text-bgColor">
+                    <div onClick={() => setShowShiftsList(!showShiftsList)} className="info w-72 h-32 cursor-pointer flex flex-col m-2 items-start justify-between p-4 shadow-xl rounded-xl border bg-mainColor text-bgColor">
                         <h2 className='text-2xl font-bold'>الورديات</h2>
                         <h3 className='text-xl text-cyan-300 font-bold'>{filteredshifts.length} وردية</h3>
                         <div className="color w-full p-2 bg-cyan-500 rounded-full">
                         </div>
                     </div>
+                </div>
+                {showShiftsList && (
+                    <>
+                        <div className="shiftsList w-full flex flex-col items-start justify-center">
+                            <h2 className='text-xl font-bold'>الورديات: </h2>
+                            <div className="shifts flex flex-wrap items-center justify-center w-full">
+                                {filteredshifts.map((shift, ind) => (
+                                    <div onClick={() => {
+                                        setreport(shift)
+                                        setPrintingReport(!printingReport)
+                                    }} key={ind} className="shift rounded-xl cursor-pointer flex items-start justify-center flex-col p-2 m-4 bg-mainColor text-bgColor">
+                                        <h2 className='my-0.5'>التاريخ: {FormatedDate(shift.createdAt)}</h2>
+                                        <h2 className='my-0.5'>الفرع: {shift.branch}</h2>
+                                        <h2 className='my-0.5'>فتح الوردية: {shift.casher}</h2>
+                                        <h2 className='my-0.5'>إغلاق الوردية: {shift.close}</h2>
+                                        <h2 className='my-0.5'>إجمالي الوردية: {shiftTotalRefund(shift)} ج.م</h2>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                )}
+                <div className={`ReportShift absolute overflow-auto bottom-0 right-0 bg-white flex flex-col items-center justify-start p-5 ${printingReport ? "w-full h-full rounded-none opacity-100" : "opacity-0 w-0 h-0  rounded-xl"} duration-700`}>
+                    {printingReport && <button onClick={() => setPrintingReport(!printingReport)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>}
+                    {printingReport && (
+                        <>
+                            <div className="summaryInvoices w-full flex flex-col items-center justify-start">
+                                <div className="invoices w-full lg:w-8/12 p-2 border-2 border-mainColor">
+                                    <h4 className='text-base mb-5 text-gray-500'>تاريخ الاغلاق: {FormatedDate(report.updatedAt)}</h4>
+                                    <div className="sammary w-full my-5">
+                                        <div className="flex items-center justify-between w-full">
+                                            <h2 className='text-sm font-bold mb-2'>إجمالي الفواتير</h2>
+                                            <h3 className='text-sm'>{shiftTotalIncome()} L.E</h3>
+                                        </div>
+                                        <div className="flex items-center justify-between w-full">
+                                            <h2 className='text-sm font-bold mb-2'>إجمالي الصرف</h2>
+                                            <h3 className='text-sm'>{shiftTotalExpenses()} L.E</h3>
+                                        </div>
+                                        <div className="flex items-center justify-between w-full">
+                                            <h2 className='text-sm font-bold mb-2'>إجمالي الوردية</h2>
+                                            <h3 className='text-sm'>{shiftTotalRefund(report)} L.E</h3>
+                                        </div>
+                                        <div className="flex items-center justify-between w-full">
+                                            <h2 className='text-sm font-bold mb-2'>عدد الطلبات</h2>
+                                            <h3 className='text-sm'>{report.invoices.length} طلب</h3>
+                                        </div>
+
+                                    </div>
+                                    <h3 className='text-xl font-bold'>الفواتير خلال الوردية: </h3>
+                                    {report.invoices.map((invoice, ind) => (
+                                        <div key={ind} className="invoice w-full flex flex-col items-start justify-start my-2 p-2">
+                                            <h4 className='text-xs text-gray-500'>الكاشير: {invoice.user}</h4>
+                                            <h4 className='text-xs text-gray-500'>العميل: {invoice.client}</h4>
+                                            <h4 className='text-xs text-gray-500'>طريقة الدفع: {invoice.payment}</h4>
+                                            <div className="totalInvoice flex items-center justify-between w-full">
+                                                <h2 className='text-lg font-semibold mb-2'>إجمالي الفاتورة</h2>
+                                                <h3 className='text-lg'>{invoice.total} L.E</h3>
+                                            </div>
+                                            {invoice.items.map((item, ind) => (
+                                                <div className="item mb-1 w-full flex items-center justify-between" key={ind}>
+                                                    <h4 className='text-sm text-gray-600'><span className="font-medium">{item.title}:</span> {item.quantity} * {item.price}</h4>
+                                                    <h3 className='text-sm'>{item.price * item.quantity} L.E</h3>
+                                                </div>
+                                            ))}
+                                            <div className="discount flex items-center justify-between w-full">
+                                                <h2 className='text-sm font-bold mb-2'>الخصم</h2>
+                                                <h3 className='text-sm'>{invoice.discount} L.E</h3>
+                                            </div>
+                                            <div className="delivery flex items-center justify-between w-full">
+                                                <h2 className='text-sm font-bold mb-2'>التوصيل</h2>
+                                                <h3 className='text-sm'>{invoice.delivery} L.E</h3>
+                                            </div>
+
+                                        </div>
+                                    ))}
+                                    {report.expenses.length > 0 && (
+                                        <>
+                                            <h3 className='text-xl font-bold'>المصروفات خلال الوردية: </h3>
+                                            {report.expenses.map((expense, ind) => (
+                                                <div key={ind} className="expense w-full flex flex-col items-start justify-start my-2 p-2">
+                                                    <h4 className='text-xs text-gray-500'>الكاشير: {expense.user}</h4>
+                                                    <div className="flex items-center justify-between w-full">
+                                                        <h2 className='text-sm font-bold mb-2'>سبب الصرف</h2>
+                                                        <h3 className='text-sm'>{expense.reason} L.E</h3>
+                                                    </div>
+                                                    <div className="flex items-center justify-between w-full">
+                                                        <h2 className='text-sm font-bold mb-2'>قيمة الصرف</h2>
+                                                        <h3 className='text-sm'>{+expense.value} L.E</h3>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
+                                    )}
+
+                                </div>
+
+                                <div className="btns w-80 my-3">
+                                    <button onClick={() => PrintReport()} className='submitBtn'>طباعة التقرير</button>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </>
         )
