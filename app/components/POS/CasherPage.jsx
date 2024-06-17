@@ -30,6 +30,29 @@ export default function CasherPage({ shift, items, User }) {
         return totalShiftIncome
     }
 
+    const totalDiscounts = () => {
+        let totalDiscount = 0
+        invoices.map(invoice => {
+            totalDiscount = totalDiscount + +invoice.discount
+        })
+        return totalDiscount
+    }
+
+    const totalPayment = (method) => {
+        let totalPay = 0
+
+        const filterdInvoices = shift.invoices.filter(invoice => {
+            const paymentMethod = invoice.payment === method
+            return paymentMethod
+        })
+
+        filterdInvoices.map(invoice => {
+            totalPay = totalPay + +invoice.total
+        })
+
+        return totalPay
+    }
+
     const totalExpenses = () => {
         let totalShiftExpense = 0
         expenses.map(expense => {
@@ -414,7 +437,7 @@ export default function CasherPage({ shift, items, User }) {
                         {invoices.map((invoice, ind) => (
                             <div onClick={() => {
                                 setItemsInOrder(invoice.items)
-                                setPayment(invoice.setPayment)
+                                setPayment(invoice.payment)
                                 setDelivery(invoice.delivery)
                                 setTaxs(invoice.taxs)
                                 setClient(invoice.client)
@@ -646,7 +669,10 @@ export default function CasherPage({ shift, items, User }) {
                 {showReport && <button onClick={() => setShowReport(!showReport)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>}
                 <div className="summaryInvoices w-full flex flex-col items-center justify-start">
                     <div className="invoices w-full lg:w-8/12 p-2 border-2 border-mainColor">
+                        <h4 className='text-base mb-1 text-gray-500'>تاريخ الفتح: {FormatedDate(shift.createdAt)}</h4>
+                        <h4 className='text-base mb-1 text-gray-500'>بواسطة: {shift.casher}</h4>
                         <h4 className='text-base mb-5 text-gray-500'>تاريخ الاغلاق: {FormatedDate(new Date())}</h4>
+                        
                         <div className="sammary w-full my-5">
                             <div className="flex items-center justify-between w-full">
                                 <h2 className='text-sm font-bold mb-2'>إجمالي الفواتير</h2>
@@ -660,32 +686,30 @@ export default function CasherPage({ shift, items, User }) {
                                 <h2 className='text-sm font-bold mb-2'>إجمالي الوردية</h2>
                                 <h3 className='text-sm'>{totalRefund()} L.E</h3>
                             </div>
+                            <div className="flex items-center justify-between w-full">
+                                <h2 className='text-sm font-bold mb-2'>إجمالي الدفع الكاش</h2>
+                                <h3 className='text-sm'>{totalPayment('Cash')} L.E</h3>
+                            </div>
+                            <div className="flex items-center justify-between w-full">
+                                <h2 className='text-sm font-bold mb-2'>إجمالي دفع الفيزا</h2>
+                                <h3 className='text-sm'>{totalPayment('Visa')} L.E</h3>
+                            </div>
+                            <div className="flex items-center justify-between w-full">
+                                <h2 className='text-sm font-bold mb-2'>إجمالي الخصومات</h2>
+                                <h3 className='text-sm'>{totalDiscounts()} L.E</h3>
+                            </div>
+                            <div className="flex items-center justify-between w-full">
+                                <h2 className='text-sm font-bold mb-2'>عدد الطلبات</h2>
+                                <h3 className='text-sm'>{shift.invoices.length} طلب</h3>
+                            </div>
                         </div>
                         <h3 className='text-xl font-bold'>الفواتير خلال الوردية: </h3>
                         {invoices.map((invoice, ind) => (
                             <div key={ind} className="invoice w-full flex flex-col items-start justify-start my-2 p-2">
-                                <h4 className='text-xs text-gray-500'>الكاشير: {invoice.user}</h4>
-                                <h4 className='text-xs text-gray-500'>العميل: {invoice.client}</h4>
-                                <h4 className='text-xs text-gray-500'>طريقة الدفع: {invoice.payment}</h4>
                                 <div className="totalInvoice flex items-center justify-between w-full">
-                                    <h2 className='text-lg font-semibold mb-2'>إجمالي الفاتورة</h2>
-                                    <h3 className='text-lg'>{invoice.total} L.E</h3>
+                                    <h2 className='text-base font-semibold mb-2'>{ind + 1} - إجمالي الفاتورة</h2>
+                                    <h3 className='text-base'>{invoice.total} L.E</h3>
                                 </div>
-                                {invoice.items.map((item, ind) => (
-                                    <div className="item mb-1 w-full flex items-center justify-between" key={ind}>
-                                        <h4 className='text-sm text-gray-600'><span className="font-medium">{item.title}:</span> {item.quantity} * {item.price}</h4>
-                                        <h3 className='text-sm'>{item.price * item.quantity} L.E</h3>
-                                    </div>
-                                ))}
-                                <div className="discount flex items-center justify-between w-full">
-                                    <h2 className='text-sm font-bold mb-2'>الخصم</h2>
-                                    <h3 className='text-sm'>{invoice.discount} L.E</h3>
-                                </div>
-                                <div className="delivery flex items-center justify-between w-full">
-                                    <h2 className='text-sm font-bold mb-2'>التوصيل</h2>
-                                    <h3 className='text-sm'>{invoice.delivery} L.E</h3>
-                                </div>
-
                             </div>
                         ))}
                         {expenses.length > 0 && (

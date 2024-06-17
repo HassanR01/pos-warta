@@ -313,9 +313,15 @@ export default function DashboardPage({ User }) {
                     {printingReport && <button onClick={() => setPrintingReport(!printingReport)} className='text-red-500 bg-mainColor p-2 rounded-xl absolute top-5 left-5'><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg></button>}
                     {printingReport && (
                         <>
+
                             <div className="summaryInvoices w-full flex flex-col items-center justify-start">
                                 <div className="invoices w-full lg:w-8/12 p-2 border-2 border-mainColor">
-                                    <h4 className='text-base mb-5 text-gray-500'>تاريخ الاغلاق: {FormatedDate(report.updatedAt)}</h4>
+                                    
+                                    <h4 className='text-base mb-1 text-gray-500'>تاريخ الفتح: {FormatedDate(report.createdAt)}</h4>
+                                    <h4 className='text-base mb-1 text-gray-500'>بواسطة: {report.casher}</h4>
+                                    <h4 className='text-base mb-1 text-gray-500'>تاريخ الاغلاق: {FormatedDate(report.updatedAt)}</h4>
+                                    <h4 className='text-base mb-5 text-gray-500'>بواسطة: {report.close}</h4>
+                                    
                                     <div className="sammary w-full my-5">
                                         <div className="flex items-center justify-between w-full">
                                             <h2 className='text-sm font-bold mb-2'>إجمالي الفواتير</h2>
