@@ -116,7 +116,7 @@ export default function DashboardPage({ User }) {
         });
 
         const filteredShft = shifts.filter(shift => {
-            const shiftDate = new Date(shift.updatedAt);
+            const shiftDate = new Date(shift.createdAt);
             const closed = shift.status === 'close'
             if (filterBranch !== "All") {
                 const branchFilter = shift.branch === filterBranch
@@ -205,16 +205,20 @@ export default function DashboardPage({ User }) {
 
         const TotalIncome = () => {
             let totalIncome = 0
-            filteredinvoices.map(inv => {
-                totalIncome = totalIncome + +inv.total
+            filteredshifts.map(shift => {
+                shift.invoices.map(inv => {
+                    totalIncome = totalIncome + +inv.total
+                })
             })
             return totalIncome
         }
 
         const TotalExp = () => {
             let totalExp = 0
-            filteredexpenses.map(exp => {
-                totalExp = totalExp + +exp.value
+            filteredshifts.map(shift => {
+                shift.expenses.map(exp => {
+                    totalExp = totalExp + +exp.value
+                })
             })
             return totalExp
         }
@@ -233,6 +237,14 @@ export default function DashboardPage({ User }) {
         }
 
 
+        const TotalOrders = () => {
+            let orders = 0
+            filteredshifts.map(shift => {
+                orders = orders + shift.invoices.length
+            })
+
+            return orders
+        }
 
 
         return (
@@ -277,7 +289,7 @@ export default function DashboardPage({ User }) {
                     </div>
                     <div className="info w-72 h-32 cursor-pointer flex flex-col m-2 items-start justify-between p-4 shadow-xl rounded-xl border bg-mainColor text-bgColor">
                         <h2 className='text-2xl font-bold'>الطلبات</h2>
-                        <h3 className='text-xl text-yellow-500 font-bold'>{filteredinvoices.length} طلب</h3>
+                        <h3 className='text-xl text-yellow-500 font-bold'>{TotalOrders()} طلب</h3>
                         <div className="color w-full p-2 bg-yellow-500 rounded-full">
                         </div>
                     </div>
@@ -316,12 +328,12 @@ export default function DashboardPage({ User }) {
 
                             <div className="summaryInvoices w-full flex flex-col items-center justify-start">
                                 <div className="invoices w-full lg:w-8/12 p-2 border-2 border-mainColor">
-                                    
+
                                     <h4 className='text-base mb-1 text-gray-500'>تاريخ الفتح: {FormatedDate(report.createdAt)}</h4>
                                     <h4 className='text-base mb-1 text-gray-500'>بواسطة: {report.casher}</h4>
                                     <h4 className='text-base mb-1 text-gray-500'>تاريخ الاغلاق: {FormatedDate(report.updatedAt)}</h4>
                                     <h4 className='text-base mb-5 text-gray-500'>بواسطة: {report.close}</h4>
-                                    
+
                                     <div className="sammary w-full my-5">
                                         <div className="flex items-center justify-between w-full">
                                             <h2 className='text-sm font-bold mb-2'>إجمالي الفواتير</h2>
