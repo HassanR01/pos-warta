@@ -1,11 +1,11 @@
 'use client'
 import React, { useState } from 'react'
 
-export default function AddItem({ Ctgs, Brns }) {
-    const [title, settitle] = useState('')
-    const [prices, setprices] = useState([])
-    const [category, setcategory] = useState('')
-    const [description, setdescription] = useState('')
+export default function AddItem({ Ctgs, Brns, lasttitle, lastprices, lastcategory, lastdescription, id, editItem }) {
+    const [title, settitle] = useState(lasttitle || '')
+    const [prices, setprices] = useState(lastprices || [])
+    const [category, setcategory] = useState(lastcategory || '')
+    const [description, setdescription] = useState(lastdescription || '')
     const [branch, setbranch] = useState("")
     const [price, setPrice] = useState(0)
 
@@ -65,8 +65,36 @@ export default function AddItem({ Ctgs, Brns }) {
         }
     }
 
+    // Handle Edit Items
+    const [itemId, setItemId] = useState(id || '')
+    const [openEdits, setOpenEdits] = useState(editItem)
+    const HandleEditItem = async (e) => {
+        e.preventDefault()
+        if (title && prices.length > 0 && category) {
+            try {
+                const res = await fetch(`/api/items/${itemId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({ title, prices, category, description })
+                })
+
+                if (res.ok) {
+                    setAlert('تم تعديل العنصر بنجاح')
+                }
+
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            setAlert('اضف كل البيانات')
+        }
+    }
+
+
     return (
-        <form onSubmit={AddItem} onChange={() => setAlert('')}>
+        <form onSubmit={openEdits ? HandleEditItem : AddItem} onChange={() => setAlert('')}>
             <div className="title w-full mb-3 lg:mb-5">
                 <label className='text-xl font-semibold' htmlFor="title">اسم العنصر:</label>
                 <input className='w-full my-2' type="text" name="title" value={title} onChange={(e) => settitle(e.target.value)} id="title" placeholder='اسم العنصر' />
@@ -110,7 +138,7 @@ export default function AddItem({ Ctgs, Brns }) {
             </div>
 
 
-            <button className='submitBtn' type='submit'>{alert ? alert : 'إضافة عنصر'}</button>
+            <button className='submitBtn' type='submit'>{alert ? alert : editItem ? "تعديل العنصر" : 'إضافة عنصر'}</button>
         </form>
     )
 }
