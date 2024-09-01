@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import DateRangePicker from './DateRangePicker';
 import Loading from '../main/Loading'
+import * as XLSX from 'xlsx'
 
 
 export default function DashboardPage({ User }) {
@@ -193,7 +194,6 @@ export default function DashboardPage({ User }) {
     }
 
 
-
     if (isLoading) {
         return <Loading />
     } else {
@@ -246,6 +246,26 @@ export default function DashboardPage({ User }) {
             return orders
         }
 
+        // export As Excel Sheet
+        const exportedShifts = []
+        filteredshifts.map((shift, ind) => {
+            const FormatedSheft = {
+                Day: FormatedDate(shift.createdAt),
+                close: FormatedDate(shift.updatedAt),
+                totalInvoices: shift.invoices.length,
+                totalExpenses: shift.expenses.length,
+                branch: shift.branch,
+                totalRefund: shiftTotalRefund(shift),
+            }
+            exportedShifts.push(FormatedSheft)
+        })
+
+        const ExportClientsData = (data, worksheetName) => {
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+            XLSX.writeFile(wb, `${worksheetName}-Shifts.xlsx`);
+        }
 
         return (
             <>
@@ -407,6 +427,9 @@ export default function DashboardPage({ User }) {
                             </div>
                         </>
                     )}
+                </div>
+                <div className="exportData my-5">
+                    <button onClick={() => ExportClientsData(exportedShifts, `from ${FormatedDate(startDate)}`)} className='submitBtn'>تصدير الشيفتات</button>
                 </div>
             </>
         )
