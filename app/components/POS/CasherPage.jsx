@@ -201,7 +201,7 @@ export default function CasherPage({ shift, items, User }) {
 
     const mainTotalItemsPrice = () => {
         let totalItemsPrice = subTotalItems(itemsInOrder)
-        let mainTotal = (totalItemsPrice + delivery) - (discount)
+        let mainTotal = (totalItemsPrice + delivery + taxs) - (discount)
         return mainTotal
     }
 
@@ -252,6 +252,7 @@ export default function CasherPage({ shift, items, User }) {
                 setItemsInOrder([])
                 setDiscount(0)
                 setDelivery(0)
+                setTaxs(0)
                 window.print()
             }
 
@@ -275,6 +276,7 @@ export default function CasherPage({ shift, items, User }) {
                 setAlert('تم تحديث الشيفت بنجاح')
                 setItemsInOrder([])
                 setDiscount(0)
+                setTaxs(0)
                 setDelivery(0)
                 setShowInvoice(false)
             }
@@ -436,13 +438,13 @@ export default function CasherPage({ shift, items, User }) {
                         <h2 className='text-xl mb-4 font-bold'>الفواتير:</h2>
                         {invoices.map((invoice, ind) => (
                             <div onClick={() => {
+                                setShowInvoice(!showInvoice)
                                 setItemsInOrder(invoice.items)
                                 setPayment(invoice.payment)
                                 setDelivery(invoice.delivery)
                                 setTaxs(invoice.taxs)
                                 setClient(invoice.client)
                                 setDiscount(invoice.discount)
-                                setShowInvoice(!showInvoice)
                                 setIndexToDelete(ind)
                             }} className="invoice cursor-pointer hover:bg-slate-50 hover:border-mainColor border-2 bg-gray-300 w-full p-2 flex items-center justify-between rounded-xl my-1" key={ind}>
                                 <h4><span className='font-bold items-center'>الإجمالي: </span>{invoice.total} ج.م</h4>
@@ -538,6 +540,19 @@ export default function CasherPage({ shift, items, User }) {
                                 </div>
                             </div>
                         </div>
+                        <div className="flex items-center mb-2 justify-between w-full">
+                            <h3 className='font-semibold'>ضريبة ق.م</h3>
+                            <div className="Delevery flex items-center justify-center">
+                                <div onClick={() => setTaxs(Math.trunc((subTotalItems(itemsInOrder) * 0.14)))} className="QBtn cursor-pointer p-1 rounded-xl flex items-center justify-center border-2 border-blackColor hover:bg-blackColor hover:text-bgColor"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /> </svg></div>
+                                <h3 className=' mx-2'>{taxs}</h3>
+                                <div onClick={() => {
+                                    if (taxs >= 0) {
+                                        setTaxs(0)
+                                    }
+                                }} className="QBtn cursor-pointer p-1 rounded-xl flex items-center justify-center border-2 border-blackColor hover:bg-blackColor hover:text-bgColor"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" /></svg>
+                                </div>
+                            </div>
+                        </div>
                         <div className="flex items-center mb-8 justify-between w-full">
                             <h3 className='font-semibold'>خصم</h3>
                             <div className="Delevery flex items-center justify-center">
@@ -603,6 +618,12 @@ export default function CasherPage({ shift, items, User }) {
                                 <div className="flex items-center mb-2 justify-between w-full">
                                     <h3 className='font-semibold'>التوصيل</h3>
                                     <h3>{delivery} L.E</h3>
+                                </div>
+                            )}
+                            {taxs > 0 && (
+                                <div className="flex items-center mb-2 justify-between w-full">
+                                    <h3 className='font-semibold'>ضريبة ق.م</h3>
+                                    <h3>{taxs} L.E</h3>
                                 </div>
                             )}
                             {discount > 0 && (
