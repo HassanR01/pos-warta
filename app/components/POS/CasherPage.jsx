@@ -541,7 +541,7 @@ export default function CasherPage({ shift, items, User }) {
                             </div>
                         </div>
                         <div className="flex items-center mb-2 justify-between w-full">
-                            <h3 className='font-semibold'>ضريبة ق.م</h3>
+                            <h3 dir='rtl' className='font-semibold'>ضريبة ق.م %14</h3>
                             <div className="Delevery flex items-center justify-center">
                                 <div onClick={() => setTaxs(Math.trunc((subTotalItems(itemsInOrder) * 0.14)))} className="QBtn cursor-pointer p-1 rounded-xl flex items-center justify-center border-2 border-blackColor hover:bg-blackColor hover:text-bgColor"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4">   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /> </svg></div>
                                 <h3 className=' mx-2'>{taxs}</h3>
@@ -622,7 +622,7 @@ export default function CasherPage({ shift, items, User }) {
                             )}
                             {taxs > 0 && (
                                 <div className="flex items-center mb-2 justify-between w-full">
-                                    <h3 className='font-semibold'>ضريبة ق.م</h3>
+                                    <h3 dir='rtl' className='font-semibold'>ضريبة ق.م %14</h3>
                                     <h3>{taxs} L.E</h3>
                                 </div>
                             )}
